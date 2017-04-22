@@ -117,8 +117,6 @@ public class Knee_Gui extends Applet implements ActionListener, KeyListener, Ser
         line.addChild(cylinder1);
         root.addChild(line);
              
-        
-        //add a shape node to the scene graph
         Sphere sphere = new Sphere(.25f);
         leg = new TransformGroup();
         leg.setCapability(TransformGroup.ALLOW_TRANSFORM_WRITE);
