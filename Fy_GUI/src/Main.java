@@ -1,74 +1,26 @@
+import java.awt.BorderLayout;
 import java.awt.EventQueue;
 
 import javax.swing.JFrame;
-import javax.swing.JTabbedPane;
-import java.awt.BorderLayout;
 import javax.swing.JPanel;
-import net.miginfocom.swing.MigLayout;
-import net.proteanit.sql.DbUtils;
-
-import javax.swing.JTable;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JCheckBox;
-import javax.swing.JTextField;
+import javax.swing.border.EmptyBorder;
 import javax.swing.JButton;
-import javax.swing.JScrollPane;
 import java.awt.event.ActionListener;
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.net.ServerSocket;
-import java.net.Socket;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
 import java.awt.event.ActionEvent;
-import javax.swing.JTextArea;
-import java.awt.TextField;
-import java.awt.GridLayout;
-import java.awt.TextArea;
+import javax.swing.AbstractAction;
+import javax.swing.Action;
 
-public class Main {
+public class Main extends JFrame {
 
-	private JFrame frame;
-	private JTextField Last_name;
-	private JTextField First_name;
-	private JTextField Date_of_birth;
-	private JTextField Address_1;
-	private JTextField Address_2;
-	private JTextField State;
-	private JTextField Injury;
-	private JTextField Progame;
-	private JTable table;
-	private static Connection connection;
-	private static Connection conn;
-	private static Statement myStmt;
-	private static final int portNumber = 8082;
-	private static final String hostname = "192.168.43.145" + "";
-	private String output;
-	public ServerSocket serverSocket;
-	public Socket socket;
-	public BufferedWriter bw;
-	public boolean flag_Disconnect = false;
-	private JTextField textField;
-	private JTable User_table;
+	private JPanel contentPane;
 
-
-	/**
-	 * Launch the application.
-	 */
+	
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					Main window = new Main();
-					window.frame.setVisible(true);
+					Main frame = new Main();
+					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -76,421 +28,51 @@ public class Main {
 		});
 	}
 
-	/**
-	 * Create the application.
-	 */
 	public Main() {
-		initialize();
-	}
-
-	/**
-	 * Initialize the contents of the frame.
-	 */
-	private void initialize() {
-		frame = new JFrame();
-		frame.setBounds(100, 100, 599, 479);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.getContentPane().setLayout(new GridLayout(0, 1, 0, 0));
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setBounds(100, 100, 450, 300);
+		contentPane = new JPanel();
+		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+		contentPane.setLayout(new BorderLayout(0, 0));
+		setContentPane(contentPane);
 		
-		JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
-		frame.getContentPane().add(tabbedPane);
+		JPanel panel = new JPanel();
+		contentPane.add(panel, BorderLayout.NORTH);
 		
-		JPanel Main = new JPanel();
-		tabbedPane.addTab("Main", null, Main, null);
-		Main.setLayout(new MigLayout("", "[][][][][][grow]", "[][grow][][][][]"));
+		JButton GraphEMG = new JButton("Graph EMG");
+		GraphEMG.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				Graph g = new Graph();
+				g.Graph();
+			}
+		});
+		panel.add(GraphEMG);
 		
-		JTextArea textArea = new JTextArea();
-		Main.add(textArea, "cell 5 1,grow");
-		///////////////////////////////////////////////////////////////////////////////////////
-		JButton Graph = new JButton("Graph");
-		Graph.addActionListener(new ActionListener() {
-				
-				public void actionPerformed(ActionEvent arg0) {
-					Graph g = new Graph();
-					g.Graph();
-				}
-			});
-		//	panel.add(GraphEMG);
+		JButton DataBase = new JButton("DataBase");
+		DataBase.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				DataBase db = new DataBase();
+				db.DataBase();
+			}
+		});
+		panel.add(DataBase);
 		
-		Main.add(Graph, "cell 5 3");
-		////////////////////////////////////////////////////////////////////////////////////////
-		JButton Knee_Gui = new JButton("Knee GUI");
-		Knee_Gui.addActionListener(new ActionListener() {
+		JButton AccMove = new JButton("Acc Movable");
+		AccMove.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				Knee_Gui kg = new Knee_Gui();
 				kg.Knee_gui();
 			}
 		});
-	//	panel.add(AccMove);
-		Main.add(Knee_Gui, "cell 5 4");
-		
-		JPanel DataBase = new JPanel();
-		tabbedPane.addTab("DataBase", null, DataBase, null);
-		DataBase.setLayout(new MigLayout("", "[][][][grow]", "[][][][][][][][][][][grow][][][][][grow]"));
-			
-		
-		try{
-			
-			String driver = ("com.mysql.jdbc.Driver");
-			 String url = ("jdbc:mysql://localhost:3306/fydatabase?user=root");
-			 System.out.println("update driver");
-			 Class.forName( driver );
-			 
-			 connection = DriverManager.getConnection( url );
-			  conn =DriverManager.getConnection("jdbc:mysql://localhost:3306/userdb?user=root");	
-			 
-			  myStmt = connection.createStatement();
-			 
-			 
-			 ResultSet myrs = myStmt.executeQuery("SELECT * FROM `fydatabase'");
-			 while(myrs.next()){
-				System.out.println(myrs.getString("lastName") + "," + myrs.getString("firstName") + "Thats all folks"); 
-			 }
+		panel.add(AccMove);
+	}
+
+	private class SwingAction extends AbstractAction {
+		public SwingAction() {
+			putValue(NAME, "SwingAction");
+			putValue(SHORT_DESCRIPTION, "Some short description");
 		}
-		catch(Exception e){
-			
+		public void actionPerformed(ActionEvent e) {
 		}
-		
-		
-		
-		JLabel First_Name = new JLabel("First Name");
-		DataBase.add(First_Name, "cell 1 1");
-		
-		First_name = new JTextField();
-		DataBase.add(First_name, "cell 3 1,growx");
-		First_name.setColumns(10);
-		
-		JLabel Last_Name = new JLabel("Last Name");
-		DataBase.add(Last_Name, "cell 1 2");
-		
-		Last_name = new JTextField();
-		DataBase.add(Last_name, "cell 3 2,growx");
-		Last_name.setColumns(10);
-		
-		JLabel DOB = new JLabel("Date of Birth");
-		DataBase.add(DOB, "cell 1 3");
-		
-		Date_of_birth = new JTextField();
-		DataBase.add(Date_of_birth, "cell 3 3,growx");
-		Date_of_birth.setColumns(10);
-		
-		JLabel Address1 = new JLabel("Address");
-		DataBase.add(Address1, "cell 1 4");
-		
-		Address_1 = new JTextField();
-		DataBase.add(Address_1, "cell 3 4,growx");
-		Address_1.setColumns(10);
-		
-		JLabel Address2 = new JLabel("Address");
-		DataBase.add(Address2, "cell 1 5");
-		
-		Address_2 = new JTextField();
-		DataBase.add(Address_2, "cell 3 5,growx");
-		Address_2.setColumns(10);
-		
-		JLabel City = new JLabel("City/State");
-		DataBase.add(City, "cell 1 6");
-		
-		State = new JTextField();
-		DataBase.add(State, "cell 3 6,growx");
-		State.setColumns(10);
-		
-		JLabel Inj = new JLabel("Injury");
-		DataBase.add(Inj, "cell 1 7");
-		
-		Injury = new JTextField();
-		DataBase.add(Injury, "cell 3 7,growx");
-		Injury.setColumns(10);
-		
-		JLabel Prog = new JLabel("Programe");
-		DataBase.add(Prog, "cell 1 8");
-		
-		Progame = new JTextField();
-		DataBase.add(Progame, "cell 3 8,growx");
-		Progame.setColumns(10);
-		////////////////////////////////////////////////////////////////////
-		JButton Update = new JButton("Update");
-		Update.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				try{
-					Class.forName ("com.mysql.jdbc.Driver");
-					 Connection con =DriverManager.getConnection("jdbc:mysql://localhost:3306/fydatabase?user=root");
-					PreparedStatement pst = con.prepareStatement("Insert Into data Values(?,?,?,?,?,?,?,?)");
-					
-					
-					pst.setString(1, First_name.getText());
-					pst.setString(2, Last_name.getText());
-					pst.setString(3, Date_of_birth.getText());
-					pst.setString(4, Address_1.getText());
-					pst.setString(5, Address_2.getText());
-					pst.setString(6, State.getText());
-					pst.setString(7, Injury.getText());
-					pst.setString(8, Progame.getText());
-//					pst.setString(7, "44");
-					
-					System.out.println("In update database");
-					System.out.println("In update database"+First_name.getText()+Last_name.getText());
-					JOptionPane.showMessageDialog(null, "Data Saved");
-					
-					//ResultSet rs = pst.executeQuery();
-				   // myStmt.executeUpdate(sql);
-					pst.executeUpdate();
-					pst.close();
-					con.close();
-			
-				}
-				catch(Exception e1){
-					
-				}
-			}
-		});
-		DataBase.add(Update, "cell 1 10");
-		
-		JScrollPane scrollPane = new JScrollPane();
-		DataBase.add(scrollPane, "cell 3 10 1 6,grow");
-		
-		table = new JTable();
-		scrollPane.setViewportView(table);
-		//////////////////////////////////////////////////////////////////////
-		JButton Find_Person = new JButton("Find Person");
-		Find_Person.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				try {
-					String query = "SELECT * FROM data where firstName = ?";
-					PreparedStatement pst;
-					pst = connection.prepareStatement(query);
-					System.out.println("got here");
-					pst.setString(1,First_name.getText());			
-					ResultSet rs1 = pst.executeQuery();				
-					System.out.println(First_name.getText().toString());
-					table.setModel(DbUtils.resultSetToTableModel(rs1));
-					System.out.println("got here");
-					JOptionPane.showMessageDialog(null, "Data Found");
-					pst.close();
-				} catch (SQLException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
-
-			}
-		});
-		DataBase.add(Find_Person, "cell 1 11");
-		//////////////////////////////////////////////////////////////////////
-		JButton Show_DB = new JButton("Show Database");
-		Show_DB.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				
-				try {
-					
-					String query = "SELECT * FROM data";
-					PreparedStatement pst = connection.prepareStatement(query);
-					ResultSet rs = pst.executeQuery();
-					table.setModel(DbUtils.resultSetToTableModel(rs));
-
-				} catch (SQLException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-	
-			
-			}
-		});
-		DataBase.add(Show_DB, "cell 1 12");
-		//////////////////////////////////////////////////////////////////////
-		JButton Delete = new JButton("Delete");
-		Delete.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				try {
-					String query = "delete FROM data where firstName = ?";
-					PreparedStatement pst;
-					pst = connection.prepareStatement(query);
-					System.out.println("got here");
-					pst.setString(1,First_name.getText());	
-					pst.execute();
-//					ResultSet rs1 = pst.executeQuery();				
-//					System.out.println(First_name.getText().toString());
-//					table.setModel(DbUtils.resultSetToTableModel(rs1));
-//					System.out.println("got here");
-					JOptionPane.showMessageDialog(null, "Data Deleted");
-					pst.close();
-				} catch (SQLException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
-
-			}
-		});
-		DataBase.add(Delete, "cell 1 13");
-		
-		JPanel panel = new JPanel();
-		tabbedPane.addTab("Exercise UD", null, panel, null);
-		panel.setLayout(null);
-		
-		TextArea Exer_textArea = new TextArea();
-		Exer_textArea.setBounds(10, 10, 558, 214);
-		panel.add(Exer_textArea);
-		
-		JButton Update_Exer = new JButton("Connect");
-		Update_Exer.setBounds(10, 254, 89, 23);
-		panel.add(Update_Exer);
-		
-		JButton Update_Button = new JButton("Update");
-		Update_Button.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-//				BufferedWriter bw = null;
-//				
-				try {
-					System.out.println("Server has got this far");
-					bw = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
-					bw.write(Exer_textArea.getText().toString());
-					bw.newLine();
-					bw.flush();
-					System.out.println("The message from the client" + Exer_textArea.getText().toString());
-					System.out.println("Server has ended");
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-//			
-			}
-		});
-		Update_Button.setBounds(112, 254, 89, 23);
-		panel.add(Update_Button);
-		
-		JButton Close_button = new JButton("Close");
-		Close_button.setBounds(213, 254, 89, 23);
-		panel.add(Close_button);
-		
-		JPanel panel_1 = new JPanel();
-		tabbedPane.addTab("User Database", null, panel_1, null);
-		panel_1.setLayout(new MigLayout("", "[][][grow][][][][][][][][grow]", "[][][][][grow]"));
-		
-		JButton Update_user_db = new JButton("Update Table");
-		panel_1.add(Update_user_db, "cell 1 0");
-		
-		JScrollPane scrollPane_1 = new JScrollPane();
-		panel_1.add(scrollPane_1, "cell 1 3 10 2,grow");
-		
-		User_table = new JTable();
-		scrollPane_1.setViewportView(User_table);
-		
-		JButton Find_user_db = new JButton("Find Person");
-		panel_1.add(Find_user_db, "cell 1 1");
-		
-		textField = new JTextField();
-		panel_1.add(textField, "cell 2 1,growx");
-		textField.setColumns(10);
-		
-		Find_user_db.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				try {
-					System.out.println("got here");
-					String query = "SELECT * FROM names where ID = ?";
-					PreparedStatement pst = conn.prepareStatement(query);
-					System.out.println("got here");
-					pst.setString(1,textField.getText());
-				
-					ResultSet rs1 = pst.executeQuery();
-					
-					System.out.println(textField.getText().toString());
-					User_table.setModel(DbUtils.resultSetToTableModel(rs1));
-					System.out.println("got here");
-					JOptionPane.showMessageDialog(null, "Table updated");
-					pst.close();
-	
-			
-					System.out.println("got here");
-				} catch (SQLException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
-			}
-		});
-		
-		Update_user_db.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				try{
-					
-					Class.forName ("com.mysql.jdbc.Driver");			
-					String query = "SELECT * FROM names";
-					PreparedStatement pst = conn.prepareStatement(query);
-					ResultSet rs = pst.executeQuery();
-					User_table.setModel(DbUtils.resultSetToTableModel(rs));
-					JOptionPane.showMessageDialog(null, "User Updated");
-					pst.executeUpdate();
-					pst.close();
-					conn.close();
-			
-				}
-				catch(Exception e1){
-					
-				}
-			}
-		});
-		
-		Close_button.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				try {
-					 bw = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
-					bw.write("disconect");
-					bw.newLine();
-					bw.flush();
-					socket.close();
-					System.out.println("The socket has closed");
-				} catch (IOException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
-			}
-		});
-		
-		
-		Update_Exer.addActionListener(new ActionListener(){
-
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				String Exercise = Exer_textArea.getText();
-	
-				try
-				{
-			
-					//System.out.println("Server is starting number: " + portNumber);
-					socket = new Socket(hostname, portNumber);
-					
-					
-					//Client connecting
-					//System.out.println("waiting for clients to connect");
-//					socket = Socket.accept();
-					System.out.println("A client has connected");
-					
-					//Send message to the client
-				    bw = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
-					bw.write("chat");
-					bw.newLine();
-					bw.flush();
-					
-				
-					
-					
-					
-					//Recive Message from client
-					BufferedReader br = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-					//System.out.println("The message from the client" + output);
-					
-				}
-				
-				catch(IOException e){
-					e.printStackTrace();
-				}
-				
-			
-				
-			}
-
-			
-			
-		});
 	}
 }
-
-
