@@ -12,6 +12,8 @@ import android.widget.EditText;
 
 import java.io.*;
 import java.net.Socket;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 
 public class Main3Activity extends AppCompatActivity {
@@ -26,8 +28,11 @@ public class Main3Activity extends AppCompatActivity {
     public static final int portNumber = 8082;
     public static final String debugString = "Debug";
 
-    public static String Recive = null;
-    public static String send = "chat";
+    public static String clientCommand = null;
+    public static String Recive;
+    public static String send;
+
+   // public static String send = "chat";
 
     private  Socket socket = null;
     public BufferedReader br;
@@ -53,6 +58,11 @@ public class Main3Activity extends AppCompatActivity {
             }
         };
 
+        Intent de = getIntent();
+        Bundle extras = de.getExtras();
+        send = extras.getString("user_name", " ");
+        System.out.println("The name sent was " + send + "///////////////");
+
         new Thread() {
 
             @Override
@@ -73,14 +83,16 @@ public class Main3Activity extends AppCompatActivity {
 
                     //Send message to the Server
                     BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
-                    bw.write("This is a message from client:\n" + send);
+                    bw.write("Get_Exercise\n");
                     bw.newLine();
                     bw.flush();
 
-                    //Receive Message from Server
-                    br = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 
-                    Recive = br.readLine();
+
+                    //Receive Message from Server
+                  ;
+
+                   // Recive = br.readLine();
 
 
 
@@ -101,7 +113,7 @@ public class Main3Activity extends AppCompatActivity {
             final Handler handler1 = new Handler(){
                 @Override
                 public void handleMessage(Message msg) {
-                    Text.setText(Recive);
+                    Text.setText(clientCommand);
                 }
             };
             @Override
@@ -111,9 +123,31 @@ public class Main3Activity extends AppCompatActivity {
                     @Override
                     public void run() {
                         try {
-                            BufferedReader br = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+                            SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss-dd:mm:yyyy");
+                            String currentDateandTime = sdf.format(new Date());
+                            System.out.println("This is the current date  " + currentDateandTime);
 
-                            Recive = br.readLine();
+                            String pasword1 = "1234";
+                            String username = send;
+                            ObjectOutputStream out = null;
+                            String name = username;
+                            String Rep = pasword1;
+                            String array [] = {username,pasword1,currentDateandTime};
+                            out = new ObjectOutputStream(socket.getOutputStream());
+                            out.writeObject(array);
+                            out.flush();
+
+                            BufferedReader in = null;
+
+                            in = new BufferedReader(
+                                    new InputStreamReader(socket.getInputStream()));
+
+                            clientCommand = in.readLine();
+                           // Text.setText(clientCommand);
+                            BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
+                            bw.write("Get_Exercise\n");
+                            bw.newLine();
+                            bw.flush();
                         } catch (IOException e) {
                             Log.e(debugString, e.getMessage());
                         }
@@ -160,6 +194,7 @@ public class Main3Activity extends AppCompatActivity {
         EMG.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
                 startActivity(i);
             }
         });

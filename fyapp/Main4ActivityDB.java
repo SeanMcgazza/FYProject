@@ -1,5 +1,6 @@
 package com.example.sean.fyapp;
 
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.support.v7.app.AlertDialog;
@@ -48,6 +49,11 @@ public class Main4ActivityDB extends AppCompatActivity {
         viewAll();
         updateData();
         Delete();
+
+        Intent in = getIntent();
+        Bundle extras = in.getExtras();
+        Recive = extras.getString("user_name", " ");
+        System.out.println("The bunde is" + Recive + "///////////////////////////////////////");
 
         new Thread() {
 
@@ -139,24 +145,29 @@ public class Main4ActivityDB extends AppCompatActivity {
               boolean inserted =  myDb.insertData(Name.getText().toString(),
                         rep.getText().toString(),
                         Add.getText().toString());
-                if (inserted = true){
-                    Toast.makeText(Main4ActivityDB.this, "Data inserted" ,Toast.LENGTH_LONG);
-                }
-                else
-                    Toast.makeText(Main4ActivityDB.this, "Data not inserted" ,Toast.LENGTH_LONG);
+
+                System.out.println("Got into the add data");
+//                if (inserted = true){
+//                    Toast.makeText(Main4ActivityDB.this, "Data inserted" ,Toast.LENGTH_LONG);
+//                }
+//                else
+//                    Toast.makeText(Main4ActivityDB.this, "Data not inserted" ,Toast.LENGTH_LONG);
 
                 new Thread() {
 
                     @Override
                     public void run() {
                         try {
+
+                            System.out.println("Got into the thread");
                             ObjectOutputStream out = null;
                             Object objects = new Object();
                             String name = Name.getText().toString();
                             String Rep = rep.getText().toString();
                             String rate = marks.getText().toString();
-                            String ID = id.getText().toString();
-                            String array [] = {name,Rep,rate,ID};
+                            String ID = Recive;
+                            String comment=id.getText().toString();
+                            String array [] = {name,Rep,rate,ID,comment};
                             objects = new String[][]{array};
 //                            bw.write("Harry");
 //                            bw.newLine();
@@ -164,10 +175,13 @@ public class Main4ActivityDB extends AppCompatActivity {
                             out = new ObjectOutputStream(socket.getOutputStream());
                             out.writeObject(array);
                             out.flush();
+                            System.out.println("Sent data");
                             bw.write("DataBase");
                             bw.newLine();
                             bw.flush();
-                            Toast.makeText(Main4ActivityDB.this, "Data inserted" ,Toast.LENGTH_LONG);
+
+                            showToast("Data uploaded to DataBase");
+                            //Toast.makeText(Main4ActivityDB.this, "Data inserted" ,Toast.LENGTH_LONG);
 
                         } catch (IOException e) {
                             e.printStackTrace();
@@ -210,5 +224,15 @@ public class Main4ActivityDB extends AppCompatActivity {
         builder.setTitle(title);
         builder.setMessage(message);
         builder.show();
+    }
+
+    public void showToast(final String toast)
+    {
+        runOnUiThread(new Runnable() {
+            public void run()
+            {
+                Toast.makeText(Main4ActivityDB.this, toast, Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 }

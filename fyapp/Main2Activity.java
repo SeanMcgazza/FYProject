@@ -5,8 +5,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
-import android.widget.TextView;
 
 public class Main2Activity extends AppCompatActivity {
 
@@ -23,10 +21,10 @@ public class Main2Activity extends AppCompatActivity {
         setContentView(R.layout.activity_main2);
 
 
-        upload = (Button) findViewById(R.id.upload);
+        btnExit = (Button) findViewById(R.id.Back);
         DB = (Button) findViewById(R.id.DB);
         Exercise = (Button) findViewById(R.id.Exercises);
-        btnExit = (Button) findViewById(R.id.upload);
+
 
         final Intent i = new Intent(this, MainActivity.class);
         final Intent e = new Intent(this, Main3Activity.class);
@@ -44,6 +42,11 @@ public class Main2Activity extends AppCompatActivity {
         Exercise.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                String user_name = getIntent().getExtras().getString("user_name", " ");
+                System.out.println("The bundle is " + user_name);
+                Bundle extras = new Bundle();
+                extras.putString("user_name",user_name);
+                e.putExtras(extras);
                 startActivity(e);
             }
         });
@@ -52,6 +55,13 @@ public class Main2Activity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
+                System.out.println("The bunde is //////////////////////////////////////" );
+                String user_name = getIntent().getExtras().getString("user_name", " ");
+                System.out.println("The bunde is" + user_name);
+                Bundle extras = new Bundle();
+                extras.putString("user_name",user_name);
+
+                d.putExtras(extras);
                 startActivity(d);
             }
         });
