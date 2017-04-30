@@ -45,7 +45,6 @@ public class MainActivity extends AppCompatActivity{
 
 
             Enter = (Button) findViewById(R.id.button);
-            New_user = (Button) findViewById(R.id.New_user);
             password = (EditText) findViewById(R.id.editText2);
             userName = (EditText) findViewById(R.id.editText4);
 

@@ -24,11 +24,24 @@ public class Main2Activity extends AppCompatActivity {
         btnExit = (Button) findViewById(R.id.Back);
         DB = (Button) findViewById(R.id.DB);
         Exercise = (Button) findViewById(R.id.Exercises);
+        upload = (Button) findViewById(R.id.Upload);
 
 
         final Intent i = new Intent(this, MainActivity.class);
         final Intent e = new Intent(this, Main3Activity.class);
         final Intent d = new Intent(this, Main4ActivityDB.class);
+        final Intent u = new Intent(this, Upload_Emg.class);
+
+        upload.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String user_name = getIntent().getExtras().getString("user_name", " ");
+                Bundle extras = new Bundle();
+                extras.putString("user_name",user_name);
+                u.putExtras(extras);
+                startActivity(u);
+            }
+        });
 
 
         btnExit.setOnClickListener(new View.OnClickListener() {

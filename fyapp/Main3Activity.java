@@ -31,6 +31,7 @@ public class Main3Activity extends AppCompatActivity {
     public static String clientCommand = null;
     public static String Recive;
     public static String send;
+    public static String Question;
 
    // public static String send = "chat";
 
@@ -44,7 +45,6 @@ public class Main3Activity extends AppCompatActivity {
         setContentView(R.layout.activity_main3);
 
         Exercises = (Button) findViewById(R.id.Exercises);
-        EMG = (Button) findViewById(R.id.EMG);
         Send = (Button) findViewById(R.id.Send);
 
         Text = (EditText) findViewById(R.id.editText3);
@@ -82,10 +82,6 @@ public class Main3Activity extends AppCompatActivity {
                     //Send mesage to the client
 
                     //Send message to the Server
-                    BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
-                    bw.write("Get_Exercise\n");
-                    bw.newLine();
-                    bw.flush();
 
 
 
@@ -123,6 +119,11 @@ public class Main3Activity extends AppCompatActivity {
                     @Override
                     public void run() {
                         try {
+                            BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
+                            bw.write("Get_Exercise\n");
+                            bw.newLine();
+                            bw.flush();
+
                             SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss-dd:mm:yyyy");
                             String currentDateandTime = sdf.format(new Date());
                             System.out.println("This is the current date  " + currentDateandTime);
@@ -144,10 +145,10 @@ public class Main3Activity extends AppCompatActivity {
 
                             clientCommand = in.readLine();
                            // Text.setText(clientCommand);
-                            BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
-                            bw.write("Get_Exercise\n");
-                            bw.newLine();
-                            bw.flush();
+                            BufferedWriter bw1 = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
+                            bw1.write("Get_Exercise\n");
+                            bw1.newLine();
+                            bw1.flush();
                         } catch (IOException e) {
                             Log.e(debugString, e.getMessage());
                         }
@@ -168,18 +169,29 @@ public class Main3Activity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                    send=SendText.getText().toString();
+                Question=SendText.getText().toString();
 
                 new Thread() {
                     BufferedWriter bw = null;
                     @Override
                     public void run() {
                     try{
+//                        bw = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
+//                       // bw.write("This is a message from client:\n" + send);
+//                        bw.write(send);
+//                        bw.newLine();
+//                        bw.flush();
                         bw = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
-                       // bw.write("This is a message from client:\n" + send);
-                        bw.write(send);
+                        bw.write("Send_Exercises\n");
                         bw.newLine();
                         bw.flush();
+
+                        String name = send;
+                        String Rep = Question;
+                        String array [] = {send,Question};
+                        ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
+                        out.writeObject(array);
+                        out.flush();
 
                     }
                      catch (IOException e) {
@@ -190,14 +202,7 @@ public class Main3Activity extends AppCompatActivity {
                 }.start();
             }
         });
-
-        EMG.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                startActivity(i);
-            }
-        });
+        
 
 
     }
