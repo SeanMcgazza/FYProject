@@ -60,7 +60,7 @@ public class DataBase extends JFrame {
 	public DataBase() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 559, 410);
-		contentPane = new JPanel();
+		contentPane = new JPanel(); 
 		contentPane.setForeground(Color.BLACK);
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		contentPane.setLayout(new BorderLayout(0, 0));
@@ -181,7 +181,8 @@ public class DataBase extends JFrame {
 		
 		JButton Find_Person = new JButton("Find Person");
 		Find_Person.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
+			public void actionPerformed(ActionEvent e) {			
+				
 			}
 		});
 		Find_Person.setBounds(299, 54, 117, 23);
@@ -192,7 +193,7 @@ public class DataBase extends JFrame {
 			public void actionPerformed(ActionEvent arg0) {
 				
 				try {
-					
+					System.out.println("Got in here not the other");
 					String query = "SELECT * FROM data";
 					PreparedStatement pst = connection.prepareStatement(query);
 					ResultSet rs = pst.executeQuery();
